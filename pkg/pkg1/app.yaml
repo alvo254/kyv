@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/alvo254/kindly.git
+    repoURL: https://github.com/alvo254/kyv.git
     targetRevision: HEAD
     path: "pkg/pkg1/manifests"
   destination:
