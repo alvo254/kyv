@@ -1,0 +1,21 @@
+apiVersion: isovalent.com/v1alpha1
+kind: IsovalentClusterwideEncryptionPolicy
+metadata:
+  name: encrypt-client-to-nginx
+spec:
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: default
+  podSelector:
+    matchLabels:
+      kind: client
+  peers:
+    - podSelector:
+        matchLabels:
+          app: nginx
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: default
+      ports:
+        - protocol: TCP
+          port: 80

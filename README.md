@@ -76,3 +76,5 @@ TracingPolicy is fully Kubernetes Identity Aware, so it can enforce on arbitrary
 Once there is an event triggered by a TracingPolicy and the corresponding signature, you can either send an alert to a Security Analyst or prevent the behaviour with a SIGKILL signal to the process.
 
 crictl ps
+
+
