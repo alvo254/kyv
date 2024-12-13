@@ -1,0 +1,7 @@
+resources:
+  - ../../pkg/pkg1/manifests
+
+
+patchesStrategicMerge:
+  - patches/frontend-dev-patch.yaml
+  - patches/backend-dev-patch.yaml

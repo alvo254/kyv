@@ -1,0 +1,200 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c3-po
+  namespace: landspeeder
+  labels:
+    name: c3-po
+    role: droid
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values: [starboard]
+  containers:
+    - name: nginx
+      image: nginx:latest
+      volumeMounts:
+        - name: c3-po-config-volume
+          mountPath: /etc/nginx/conf.d
+  volumes:
+    - name: c3-po-config-volume
+      configMap:
+        name: c3-po-config
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: r2-d2
+  namespace: landspeeder
+  labels:
+    name: r2-d2
+    role: droid
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values: [port]
+  containers:
+    - name: nginx
+      image: nginx:latest
+      volumeMounts:
+        - name: r2-d2-config-volume
+          mountPath: /etc/nginx/conf.d
+  volumes:
+    - name: r2-d2-config-volume
+      configMap:
+        name: r2-d2-config
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: obi-wan
+  namespace: landspeeder
+  labels:
+    name: obi-wan
+    role: jedi
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values: [port]
+  containers:
+    - name: nginx
+      image: nginx:latest
+      volumeMounts:
+        - name: obi-wan-config-volume
+          mountPath: /etc/nginx/conf.d
+  volumes:
+    - name: obi-wan-config-volume
+      configMap:
+        name: obi-wan-config
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: luke
+  namespace: landspeeder
+  labels:
+    name: luke
+    role: jedi
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values: [starboard]
+  containers:
+    - name: nginx
+      image: nginx:latest
+      volumeMounts:
+        - name: luke-config-volume
+          mountPath: /etc/nginx/conf.d
+  volumes:
+    - name: luke-config-volume
+      configMap:
+        name: luke-config
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: stormtroopers
+  namespace: spaceport
+spec:
+  selector:
+    matchLabels:
+      name: stormtrooper
+  template:
+    metadata:
+      labels:
+        name: stormtrooper
+        role: soldier
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: c3-po-config
+  namespace: landspeeder
+data:
+  default.conf: |
+    server {
+      listen 80;
+      location / {
+        add_header X-Identification "C3-PO";
+        return 200 'Greetings, Human! I am C-3PO, human-cyborg relations. Fluent in over six million forms of communication, and at your service!\n';
+      }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: r2-d2-config
+  namespace: landspeeder
+data:
+  default.conf: |
+    server {
+      listen 80;
+      location / {
+        add_header X-Identification "R2-D2";
+        return 200 'Beep beep boop boop! *whistles*\n';
+      }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: obi-wan-config
+  namespace: landspeeder
+data:
+  default.conf: |
+    server {
+      listen 80;
+      add_header X-Identification "Obi-Wan" always;
+      add_header X-Saber-Color "blue 🔵" always; 
+
+      location / {
+        return 404 'These are not the droids you are looking for.\n';
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: luke-config
+  namespace: landspeeder
+data:
+  default.conf: |
+    server {
+      listen 80;
+      add_header X-Identification "Luke" always;
+      add_header X-Saber-Color "green 🟢" always; 
+
+      location / {
+        return 404 'Like Obi-Wan said 🤷\n';
+      }
+    }
